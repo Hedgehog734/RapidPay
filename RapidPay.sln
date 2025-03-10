@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35027.167
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.ApiGateway", "RapidPay\RapidPay.ApiGateway.csproj", "{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.CardManagement", "RapidPay.CardManagement\RapidPay.CardManagement.csproj", "{57A1FDB2-9B5F-423E-BB49-851B4157D3C0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{51C71E18-CBE1-4727-A79C-4940220D2676}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.Authorization", "RapidPay.Authorization\RapidPay.Authorization.csproj", "{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.Shared", "RapidPay.Shared\RapidPay.Shared.csproj", "{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.Shared.Infrastructure", "Shared.Infrastructure\RapidPay.Shared.Infrastructure.csproj", "{97EFCEEC-3284-4229-BABD-F81AEA4F4A13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidPay.Transaction", "RapidPay.Transaction\RapidPay.Transaction.csproj", "{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57A1FDB2-9B5F-423E-BB49-851B4157D3C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57A1FDB2-9B5F-423E-BB49-851B4157D3C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57A1FDB2-9B5F-423E-BB49-851B4157D3C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57A1FDB2-9B5F-423E-BB49-851B4157D3C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{52ADEB1A-42FB-4C6A-B75B-3DEEE8F6ABCE} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{57A1FDB2-9B5F-423E-BB49-851B4157D3C0} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{C2E4F1A9-DC0E-4BEB-B42B-B3B499D9AB93} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{17A1683E-88D2-42B9-AF8B-629F2BF2E4F4} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2D34240-10FA-4E6C-80C4-8D8F4DC3D254}
+	EndGlobalSection
+EndGlobal

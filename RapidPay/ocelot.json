@@ -1,0 +1,67 @@
+{
+    "Routes": [
+        {
+            "DownstreamPathTemplate": "/api/v1/authorization/transaction",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/authorization/transaction",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/v1/authorization/card",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/authorization/card",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/v1/cards/create",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/cards/create",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/v1/cards/{cardNumber}",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/cards/{cardNumber}",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+            "DownstreamPathTemplate": "/api/v1/cards/update",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/cards/update",
+            "UpstreamHttpMethod": [ "PUT" ]
+        }
+    ],
+    "GlobalConfiguration": {
+        "BaseUrl": "https://localhost:51523"
+    }
+}
