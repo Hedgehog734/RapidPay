@@ -28,7 +28,9 @@ public class AuthorizeTransactionHandler(
     {
         try
         {
-            if (!await EnsureCardActive(request.SenderNumber) ||
+            if (request.Amount <= 0 ||
+                !await EnsureFeeAcceptableAsync(request.Amount) ||
+                !await EnsureCardActive(request.SenderNumber) ||
                 !await EnsureCardActive(request.RecipientNumber))
             {
                 return false;
@@ -111,5 +113,12 @@ public class AuthorizeTransactionHandler(
         }
 
         return cachedCard;
+    }
+
+    private async Task<bool> EnsureFeeAcceptableAsync(decimal amount)
+    {
+        var feeKey = CacheKeys.PaymentFee();
+        var fee = await cacheService.GetAsync<decimal>(feeKey);
+        return amount > fee && fee != 0;
     }
 }

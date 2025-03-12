@@ -1,17 +1,16 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using RapidPay.CardManagement.Application.EventHandlers;
-using RapidPay.CardManagement.Infrastructure.Persistence;
-using RapidPay.CardManagement.Infrastructure.Repositories;
+using RapidPay.FeeManagement.Application.Services;
+using RapidPay.FeeManagement.Infrastructure.Persistence;
+using RapidPay.FeeManagement.Infrastructure.Repositories;
 using RapidPay.Shared.Configuration;
 using RapidPay.Shared.Contracts.Caching;
-using RapidPay.Shared.Contracts.Messaging.Events;
 using RapidPay.Shared.Infrastructure.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<CardDbContext>(options =>
+builder.Services.AddDbContext<FeeDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -38,38 +37,11 @@ builder.Services.AddMassTransit(x =>
             h.Password(rabbitSettings.Password);
         });
 
-        config.ReceiveEndpoint("card-updated-management", e =>
-        {
-            e.ConfigureConsumer<CardUpdatedEventHandler>(context);
-        });
-
-        config.ReceiveEndpoint(nameof(DepositFundsEvent), e =>
-        {
-            e.ConfigureConsumer<DepositFundsEventHandler>(context);
-        });
-
-        config.ReceiveEndpoint(nameof(WithdrawFundsEvent), e =>
-        {
-            e.ConfigureConsumer<WithdrawFundsEventHandler>(context);
-        });
-
-        config.ReceiveEndpoint(nameof(RefundRequestedEvent), e =>
-        {
-            e.ConfigureConsumer<RefundRequestedEventHandler>(context);
-        });
-
-        config.ReceiveEndpoint(nameof(FeeUpdatedEvent), e =>
-        {
-            e.ConfigureConsumer<FeeUpdatedEventHandler>(context);
-        });
-
         config.ConfigureEndpoints(context);
     });
 });
 
-
-builder.Services.AddScoped<ICardRepository, CardRepository>();
-builder.Services.AddScoped<ICardTransactionRepository, CardTransactionRepository>();
+builder.Services.AddScoped<IFeeRepository, FeeRepository>();
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));
@@ -77,6 +49,8 @@ builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddHostedService<FeeUpdaterService>();
 
 var app = builder.Build();
 

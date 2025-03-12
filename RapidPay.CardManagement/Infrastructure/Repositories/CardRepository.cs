@@ -51,8 +51,10 @@ public class CardRepository(CardDbContext context) : ICardRepository
         return true;
     }
 
-    public async Task<bool> DepositAsync(string cardNumber, decimal amount)
+    public async Task<bool> DepositAsync(string cardNumber, decimal amount, decimal fee = 0)
     {
+        amount -= fee; // just subtract the commission as per requirements
+
         var card = await GetByNumberAsync(cardNumber);
 
         if (card == null)

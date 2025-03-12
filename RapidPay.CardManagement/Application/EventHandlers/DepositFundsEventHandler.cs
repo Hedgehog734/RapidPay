@@ -3,11 +3,14 @@ using RapidPay.CardManagement.Domain.Entities;
 using RapidPay.CardManagement.Infrastructure.Persistence;
 using RapidPay.CardManagement.Infrastructure.Repositories;
 using RapidPay.Shared.Constants;
+using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Contracts.Messaging.Events;
+using RapidPay.Shared.Infrastructure.Caching;
 
 namespace RapidPay.CardManagement.Application.EventHandlers;
 
 public class DepositFundsEventHandler(
+    ICacheService cacheService,
     ICardTransactionRepository logRepository,
     CardDbContext dbContext,
     ICardRepository cardRepository,
@@ -24,19 +27,19 @@ public class DepositFundsEventHandler(
 
         try
         {
-            var success = await cardRepository.DepositAsync(message.CardNumber, message.Amount);
+            var fee = await cacheService.GetAsync<decimal>(CacheKeys.PaymentFee());
+
+            if (fee == 0)
+            {
+                await SendFailedEvent(message, Reasons.FeeNotFound);
+                return;
+            }
+
+            var success = await cardRepository.DepositAsync(message.CardNumber, message.Amount, fee);
 
             if (!success)
             {
-                await publisher.Publish(new TransactionFailedEvent
-                {
-                    TransactionId = message.TransactionId,
-                    Reason = Reasons.InvalidRecipient,
-                    NeedRefund = true,
-                    CardNumber = message.SenderNumber,
-                    Amount = message.Amount
-                });
-
+                await SendFailedEvent(message, Reasons.InvalidRecipient);
                 return;
             }
 
@@ -72,5 +75,17 @@ public class DepositFundsEventHandler(
                 Amount = !isFundsDeposited ? message.Amount : null
             });
         }
+    }
+
+    private async Task SendFailedEvent(DepositFundsEvent message, string reason)
+    {
+        await publisher.Publish(new TransactionFailedEvent
+        {
+            TransactionId = message.TransactionId,
+            Reason = reason,
+            NeedRefund = true,
+            CardNumber = message.SenderNumber,
+            Amount = message.Amount
+        });
     }
 }
