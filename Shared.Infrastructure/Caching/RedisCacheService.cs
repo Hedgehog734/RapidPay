@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using RapidPay.Shared.Contracts.Caching;
+using StackExchange.Redis;
 
 namespace RapidPay.Shared.Infrastructure.Caching;
 
-public class RedisCacheService(IDistributedCache cache) : ICacheService
+public class RedisCacheService(IDistributedCache cache, IDatabase database) : ICacheService
 {
     public async Task<T?> GetAsync<T>(string key)
     {
@@ -20,5 +21,26 @@ public class RedisCacheService(IDistributedCache cache) : ICacheService
         {
             AbsoluteExpirationRelativeToNow = expiration
         });
+    }
+
+    public async Task RemoveRangeByScoreAsync(string key, double min, double max)
+    {
+        await database.SortedSetRemoveRangeByScoreAsync(key, min, max);
+    }
+
+    public async Task<IEnumerable<T>> GetSortedSetAsync<T>(string key)
+    {
+        var values = await database.SortedSetRangeByRankAsync(key);
+
+        return values.Select(value => value.HasValue
+                ? JsonSerializer.Deserialize<T>(value.ToString())
+                : default)
+            .Where(value => value != null)!;
+    }
+
+    public async Task AddToSortedSetAsync<T>(string key, T value, double score)
+    {
+        var json = JsonSerializer.Serialize(value);
+        await database.SortedSetAddAsync(key, json, score);
     }
 }

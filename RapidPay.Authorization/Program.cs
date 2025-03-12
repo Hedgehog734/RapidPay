@@ -14,6 +14,7 @@ using RapidPay.Shared.Configuration;
 using RapidPay.Shared.Contracts;
 using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Infrastructure.Caching;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,14 @@ builder.Services.AddScoped<ICardAuthRepository, CardAuthRepository>();
 builder.Services.AddScoped<IAuthLogRepository, AuthLogRepository>();
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
 builder.Services.AddScoped<ICardManagementService, CardManagementService>();
+
+builder.Services.AddScoped<IDatabase>(config =>
+{
+    var rabbitSettings = config.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    var multiplexer = ConnectionMultiplexer.Connect($"{rabbitSettings.HostName},password={rabbitSettings.Password}");
+    return multiplexer.GetDatabase();
+});
+
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));
 

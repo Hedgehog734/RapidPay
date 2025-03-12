@@ -53,7 +53,7 @@ public class CardsController(IMediator mediator) : ControllerBase
             return Unauthorized();
         }
 
-        if (User.IsInRole("User") && cardNumber != userId)
+        if (!User.IsInRole("Admin") && User.IsInRole("User") && cardNumber != userId)
         {
             return Forbid();
         }

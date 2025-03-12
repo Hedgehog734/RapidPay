@@ -31,7 +31,8 @@ public class AuthorizeTransactionHandler(
             if (request.Amount <= 0 ||
                 !await EnsureFeeAcceptableAsync(request.Amount) ||
                 !await EnsureCardActive(request.SenderNumber) ||
-                !await EnsureCardActive(request.RecipientNumber))
+                !await EnsureCardActive(request.RecipientNumber) ||
+                await IsDuplicateTransaction(request.SenderNumber, request.RecipientNumber, request.Amount))
             {
                 return false;
             }
@@ -120,5 +121,28 @@ public class AuthorizeTransactionHandler(
         var feeKey = CacheKeys.PaymentFee();
         var fee = await cacheService.GetAsync<decimal>(feeKey);
         return amount > fee && fee != 0;
+    }
+
+    private async Task<bool> IsDuplicateTransaction(string senderNumber, string recipientNumber, decimal amount)
+    {
+        var cacheKey = CacheKeys.TransactionFraud(senderNumber);
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        await cacheService.RemoveRangeByScoreAsync(cacheKey, 0, now - 10);
+
+        var existingTransactions = await cacheService.GetSortedSetAsync<CachedFraudData>(cacheKey);
+
+        if (existingTransactions.Any(x => x.RecipientNumber == recipientNumber && x.Amount == amount))
+        {
+            logger.LogWarning("Duplicate transaction detected: {SenderNumber} -> {RecipientNumber}; Amount: {Amount}",
+                senderNumber, recipientNumber, amount);
+
+            return true;
+        }
+
+        var transactionData = new CachedFraudData(now, amount, recipientNumber);
+        await cacheService.AddToSortedSetAsync(cacheKey, transactionData, now);
+
+        return false;
     }
 }

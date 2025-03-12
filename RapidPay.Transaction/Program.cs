@@ -8,6 +8,7 @@ using RapidPay.Shared.Infrastructure.Caching;
 using RapidPay.Transaction.Application.EventHandlers;
 using RapidPay.Transaction.Infrastructure.Persistent;
 using RapidPay.Transaction.Infrastructure.Repositories;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,6 +70,13 @@ builder.Services.AddMassTransit(x =>
 
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<ICacheService, RedisCacheService>();
+
+builder.Services.AddScoped<IDatabase>(config =>
+{
+    var rabbitSettings = config.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    var multiplexer = ConnectionMultiplexer.Connect($"{rabbitSettings.HostName},password={rabbitSettings.Password}");
+    return multiplexer.GetDatabase();
+});
 
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(Program).Assembly));
 

@@ -7,6 +7,7 @@ using RapidPay.FeeManagement.Infrastructure.Repositories;
 using RapidPay.Shared.Configuration;
 using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Infrastructure.Caching;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<FeeUpdaterService>();
+
+builder.Services.AddScoped<IDatabase>(config =>
+{
+    var rabbitSettings = config.GetRequiredService<IOptions<RabbitMqSettings>>().Value;
+    var multiplexer = ConnectionMultiplexer.Connect($"{rabbitSettings.HostName},password={rabbitSettings.Password}");
+    return multiplexer.GetDatabase();
+});
 
 var app = builder.Build();
 
