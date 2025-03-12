@@ -1,6 +1,18 @@
 {
     "Routes": [
         {
+            "DownstreamPathTemplate": "/api/v1/auth/login",
+            "DownstreamScheme": "https",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "host.docker.internal",
+                    "Port": 8081
+                }
+            ],
+            "UpstreamPathTemplate": "/api/v1/auth/login",
+            "UpstreamHttpMethod": [ "POST" ]
+        },
+        {
             "DownstreamPathTemplate": "/api/v1/authorization/transaction",
             "DownstreamScheme": "https",
             "DownstreamHostAndPorts": [
