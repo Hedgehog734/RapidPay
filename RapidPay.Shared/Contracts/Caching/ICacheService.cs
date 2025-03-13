@@ -7,4 +7,6 @@ public interface ICacheService
     Task RemoveRangeByScoreAsync(string key, double min, double max);
     Task<IEnumerable<T>> GetSortedSetAsync<T>(string key);
     Task AddToSortedSetAsync<T>(string key, T value, double score);
+    Task<bool> AcquireLockAsync(string key, TimeSpan expiration);
+    Task ReleaseLockAsync(string key);
 }

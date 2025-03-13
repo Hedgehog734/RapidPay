@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RapidPay.Authorization.Application.EventHandlers;
 using RapidPay.Authorization.Application.Services;
+using RapidPay.Authorization.Infrastructure.Configuration;
 using RapidPay.Authorization.Infrastructure.Persistence;
 using RapidPay.Authorization.Infrastructure.Repositories;
 using RapidPay.Shared.Configuration;
@@ -24,6 +25,7 @@ builder.Services.AddDbContext<AuthorizationDbContext>(options =>
 });
 
 builder.Services.Configure<RedisSettings>(builder.Configuration.GetSection("Redis"));
+builder.Services.Configure<ServiceRedisSettings>(builder.Configuration.GetSection("Redis"));
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration["Redis:ConnectionString"];

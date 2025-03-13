@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using RapidPay.Authorization.Application.Services;
 using RapidPay.Authorization.Infrastructure.Commands;
+using RapidPay.Authorization.Infrastructure.Configuration;
 using RapidPay.Authorization.Infrastructure.Repositories;
 using RapidPay.Shared.Configuration;
 using RapidPay.Shared.Contracts.Caching;
@@ -18,22 +19,33 @@ public class AuthorizeTransactionHandler(
     ICacheService cacheService,
     ICardAuthRepository repository,
     IPublishEndpoint publisher,
-    IOptions<RedisSettings> settings,
+    IOptions<ServiceRedisSettings> settings,
     ILogger<AuthorizeTransactionHandler> logger)
     : IRequestHandler<AuthorizeTransactionCommand, bool>
 {
-    private readonly RedisSettings _settings = settings.Value;
+    private readonly ServiceRedisSettings _settings = settings.Value;
 
     public async Task<bool> Handle(AuthorizeTransactionCommand request, CancellationToken cancellationToken)
     {
+        var lockKey = CacheKeys.CardLock(request.SenderNumber);
+
         try
         {
+            var lockExpiration = TimeSpan.FromSeconds(_settings.LockPeriodSeconds);
+
+            if (!await cacheService.AcquireLockAsync(lockKey, lockExpiration))
+            {
+                logger.LogWarning("Transaction rejected: card {SenderNumber} is locked", request.SenderNumber);
+                return false;
+            }
+
             if (request.Amount <= 0 ||
                 !await EnsureFeeAcceptableAsync(request.Amount) ||
                 !await EnsureCardActive(request.SenderNumber) ||
                 !await EnsureCardActive(request.RecipientNumber) ||
                 await IsDuplicateTransaction(request.SenderNumber, request.RecipientNumber, request.Amount))
             {
+                await cacheService.ReleaseLockAsync(lockKey);
                 return false;
             }
 
@@ -42,12 +54,14 @@ public class AuthorizeTransactionHandler(
 
             if (cachedSender == null || cachedRecipientCard == null)
             {
+                await cacheService.ReleaseLockAsync(lockKey);
                 return false;
             }
 
             if (!FundsHelper.HasSufficientFunds(cachedSender.Balance, cachedSender.CreditLimit,
                     cachedSender.UsedCredit, request.Amount))
             {
+                await cacheService.ReleaseLockAsync(lockKey);
                 return false;
             }
 
@@ -66,6 +80,7 @@ public class AuthorizeTransactionHandler(
             logger.LogError(ex, "Failed to authorize transaction from {SenderNumber} to {RecipientNumber}.",
                 request.SenderNumber, request.RecipientNumber);
 
+            await cacheService.ReleaseLockAsync(lockKey);
             return false;
         }
     }
@@ -128,7 +143,7 @@ public class AuthorizeTransactionHandler(
         var cacheKey = CacheKeys.TransactionFraud(senderNumber);
         var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        await cacheService.RemoveRangeByScoreAsync(cacheKey, 0, now - 10);
+        await cacheService.RemoveRangeByScoreAsync(cacheKey, 0, now - _settings.FraudPeriodSeconds);
 
         var existingTransactions = await cacheService.GetSortedSetAsync<CachedFraudData>(cacheKey);
 

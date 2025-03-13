@@ -1,6 +1,8 @@
 ﻿using MassTransit;
 using RapidPay.Shared.Constants;
+using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Contracts.Messaging.Events;
+using RapidPay.Shared.Infrastructure.Caching;
 using RapidPay.Transaction.Domain.Entities;
 using RapidPay.Transaction.Infrastructure.Persistent;
 using RapidPay.Transaction.Infrastructure.Repositories;
@@ -8,6 +10,7 @@ using RapidPay.Transaction.Infrastructure.Repositories;
 namespace RapidPay.Transaction.Application.EventHandlers;
 
 public class TransactionAuthorizedEventHandler(
+    ICacheService cacheService,
     TransactionDbContext dbContext,
     ITransactionRepository transactionRepository,
     IPublishEndpoint publisher,
@@ -45,6 +48,9 @@ public class TransactionAuthorizedEventHandler(
         catch (Exception ex)
         {
             await dbTransaction.RollbackAsync();
+
+            var lockKey = CacheKeys.CardLock(message.CardNumber);
+            await cacheService.ReleaseLockAsync(lockKey);
 
             logger.LogError(ex, $"Failed to process {nameof(TransactionAuthorizedEvent)} for {message.TransactionId}");
 

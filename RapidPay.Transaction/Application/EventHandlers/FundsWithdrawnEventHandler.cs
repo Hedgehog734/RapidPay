@@ -1,11 +1,14 @@
 ﻿using MassTransit;
 using RapidPay.Shared.Constants;
+using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Contracts.Messaging.Events;
+using RapidPay.Shared.Infrastructure.Caching;
 using RapidPay.Transaction.Infrastructure.Repositories;
 
 namespace RapidPay.Transaction.Application.EventHandlers;
 
 public class FundsWithdrawnEventHandler(
+    ICacheService cacheService,
     ITransactionRepository transactionRepository,
     IPublishEndpoint publisher,
     ILogger<FundsWithdrawnEventHandler> logger)
@@ -39,6 +42,11 @@ public class FundsWithdrawnEventHandler(
                 CardNumber = message.CardNumber,
                 Amount = message.Amount
             });
+        }
+        finally
+        {
+            var lockKey = CacheKeys.CardLock(message.CardNumber);
+            await cacheService.ReleaseLockAsync(lockKey);
         }
     }
 }

@@ -43,4 +43,14 @@ public class RedisCacheService(IDistributedCache cache, IDatabase database) : IC
         var json = JsonSerializer.Serialize(value);
         await database.SortedSetAddAsync(key, json, score);
     }
+
+    public async Task<bool> AcquireLockAsync(string key, TimeSpan expiration)
+    {
+        return await database.StringSetAsync(key, "locked", expiration, When.NotExists);
+    }
+
+    public async Task ReleaseLockAsync(string key)
+    {
+        await database.KeyDeleteAsync(key);
+    }
 }

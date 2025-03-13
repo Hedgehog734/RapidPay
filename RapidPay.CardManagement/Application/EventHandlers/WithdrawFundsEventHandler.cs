@@ -3,11 +3,14 @@ using RapidPay.CardManagement.Domain.Entities;
 using RapidPay.CardManagement.Infrastructure.Persistence;
 using RapidPay.CardManagement.Infrastructure.Repositories;
 using RapidPay.Shared.Constants;
+using RapidPay.Shared.Contracts.Caching;
 using RapidPay.Shared.Contracts.Messaging.Events;
+using RapidPay.Shared.Infrastructure.Caching;
 
 namespace RapidPay.CardManagement.Application.EventHandlers;
 
 public class WithdrawFundsEventHandler(
+    ICacheService cacheService,
     CardDbContext dbContext,
     ICardTransactionRepository logRepository,
     ICardRepository cardRepository,
@@ -18,6 +21,7 @@ public class WithdrawFundsEventHandler(
     public async Task Consume(ConsumeContext<WithdrawFundsEvent> context)
     {
         var message = context.Message;
+        var lockKey = CacheKeys.CardLock(message.CardNumber);
         await using var dbTransaction = await dbContext.Database.BeginTransactionAsync();
 
         var needRefund = false;
@@ -29,6 +33,7 @@ public class WithdrawFundsEventHandler(
             if (!success)
             {
                 await dbTransaction.RollbackAsync();
+                await cacheService.ReleaseLockAsync(lockKey);
 
                 await publisher.Publish(new TransactionFailedEvent
                 {
@@ -64,6 +69,7 @@ public class WithdrawFundsEventHandler(
         catch (Exception ex)
         {
             await dbTransaction.RollbackAsync();
+            await cacheService.ReleaseLockAsync(lockKey);
 
             logger.LogError(ex, $"Failed to process {nameof(WithdrawFundsEvent)} for {message.TransactionId}");
 
