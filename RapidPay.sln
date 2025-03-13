@@ -17,7 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.Shared.Infrastruct
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.Transaction", "RapidPay.Transaction\RapidPay.Transaction.csproj", "{C49E3487-F1B2-4224-A2E5-F3C78E4611A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidPay.FeeManagement", "RapidPay.FeeManagement\RapidPay.FeeManagement.csproj", "{75757A27-6F05-45AA-93E4-915F6390F119}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RapidPay.FeeManagement", "RapidPay.FeeManagement\RapidPay.FeeManagement.csproj", "{75757A27-6F05-45AA-93E4-915F6390F119}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidPay.Transaction.UnitTests", "RapidPay.Transaction.UnitTests\RapidPay.Transaction.UnitTests.csproj", "{873FB89E-AA5C-499F-9413-2B2CC7092A99}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0CDE4969-BA4C-4E75-8996-DC2A5C9F4FFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapidPay.CardManagement.UnitTests", "RapidPay.CardManagement.UnitTests\RapidPay.CardManagement.UnitTests.csproj", "{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +59,14 @@ Global
 		{75757A27-6F05-45AA-93E4-915F6390F119}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75757A27-6F05-45AA-93E4-915F6390F119}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75757A27-6F05-45AA-93E4-915F6390F119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{873FB89E-AA5C-499F-9413-2B2CC7092A99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{873FB89E-AA5C-499F-9413-2B2CC7092A99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{873FB89E-AA5C-499F-9413-2B2CC7092A99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{873FB89E-AA5C-499F-9413-2B2CC7092A99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +79,8 @@ Global
 		{97EFCEEC-3284-4229-BABD-F81AEA4F4A13} = {51C71E18-CBE1-4727-A79C-4940220D2676}
 		{C49E3487-F1B2-4224-A2E5-F3C78E4611A1} = {51C71E18-CBE1-4727-A79C-4940220D2676}
 		{75757A27-6F05-45AA-93E4-915F6390F119} = {51C71E18-CBE1-4727-A79C-4940220D2676}
+		{873FB89E-AA5C-499F-9413-2B2CC7092A99} = {0CDE4969-BA4C-4E75-8996-DC2A5C9F4FFB}
+		{BA9ECFFD-5CDF-4F26-9B42-E116327DBA58} = {0CDE4969-BA4C-4E75-8996-DC2A5C9F4FFB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E2D34240-10FA-4E6C-80C4-8D8F4DC3D254}

@@ -1,10 +1,12 @@
 ﻿namespace RapidPay.Shared.Constants;
 
-public static class TransactionType
+public static class TransactionStatus
 {
-    public const string Initial = "Initial balance";
-    public const string Withdrawal = "Withdrawal";
-    public const string Deposit = "Deposit";
-    public const string Refund = "Refund";
-    public const string Update = "Balance update";
+    public const string Pending = "Pending";
+    public const string Authorized = "Authorized";
+    public const string Withdrawn = "Funds withdrawn";
+    public const string Completed = "Completed";
+    public const string Failed = "Failed";
+    public const string RefundPending = "Refund pending";
+    public const string Refunded = "Refunded";
 }
